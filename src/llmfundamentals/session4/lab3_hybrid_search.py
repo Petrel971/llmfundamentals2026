@@ -96,8 +96,12 @@ if __name__ == "__main__":
             show_first_chunk(corpus, "hybrid", hybrid, right_chunk)
 
 # My guesses BEFORE running (A dense, B BM25, C hybrid)
-# question 1 =
-# question 2 =
-# question 3 =
+# question 1 = A dense (meaning: 'forgotten' is a synonym of 'erasure', the word used in the law)
+# question 2 = B BM25 (exact number: '7 500 000' is a rare token)
+# question 3 = C hybrid (both: the words 'deployers' and 'high-risk' and the meaning)
 
 # My conclusion AFTER running: which method should we use, and why?
+# Results: q1 dense 1 / BM25 3 / hybrid 2 ; q2 dense 6 / BM25 1 / hybrid 3 ; q3 dense 2 / BM25 4 / hybrid 1.
+# No method wins every time: dense fails on exact numbers (q2), BM25 is weaker on synonyms (q1).
+# Hybrid is never first-or-bad: it always keeps the right chunk in the top 3, so with k=5 the LLM always sees it.
+# -> use hybrid: we do not know in advance whether a question relies on meaning or on exact words.

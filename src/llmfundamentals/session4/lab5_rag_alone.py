@@ -23,9 +23,9 @@ from lab_tools import ask_rag, get_corpus, get_llm
 from loguru import logger
 
 QUESTIONS = [
-    "TODO your question 1",
-    "TODO your question 2",
-    "TODO your question 3 (needs both regulations)",
+    "How long does a company have to report a personal data breach to the authority?",
+    "Which AI practices are completely forbidden?",
+    "Can a high-risk AI system be trained on sensitive personal data such as health data?",
 ]
 
 # Everything below only runs when you run this file directly.
@@ -48,3 +48,16 @@ if __name__ == "__main__":
             logger.info(first["text"])
 
 # My verdict: does the first cited chunk support the answer? =
+# Q1 (data breach): yes, GDPR-Art33-1 says "not later than 72 hours" word for word. Fully supported.
+# Q2 (forbidden practices): no. The first cited chunk (AIAct-Art5-8) only says Article 5 does not affect other laws.
+#    Retrieval missed the main list of Article 5(1); the model honestly says the sources are incomplete,
+#    but still sets answerable=True. Valid citations (in code) do not mean a good answer.
+# Q3 (health data, meant to need both laws): AIAct-Art4a-2 supports the "exceptionally, for bias detection" part.
+#    But only AI Act chunks were retrieved: GDPR Article 9 (special categories) was missed, so the answer is partial.
+#
+# EXIT TICKET
+# 1. Retrieval guarantees that the model SEES relevant text, with ids we can check. It does not guarantee that the
+#    right chunk is found, nor that the model uses it correctly (Q2 above).
+# 2. Dense search compares meanings and misses exact numbers, codes and names; BM25 catches them (lab 3, question 2).
+# 3. A model can invent an id or cite a chunk it never received; code checks it for free and every time,
+#    instead of trusting the model.

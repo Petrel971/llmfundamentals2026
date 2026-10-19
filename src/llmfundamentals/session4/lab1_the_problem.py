@@ -26,5 +26,5 @@ for chunk_id in ["AIAct-Art113-2", "AIAct-Art113-3"]:
     logger.info(corpus.by_id[chunk_id]["text"])
 
 # My notes
-# date given by the model =
-# date in the official text =
+# date given by the model = 17 July 2024 (invented: the model does not know the July 2026 amendment)
+# date in the official text = 2 December 2027 (Article 113(3)(c)(i), Annex III high-risk systems)

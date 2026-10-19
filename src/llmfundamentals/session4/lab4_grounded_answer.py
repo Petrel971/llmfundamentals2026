@@ -27,7 +27,11 @@ from lab3_hybrid_search import fuse
 from lab_tools import ask_rag, build_prompt, get_corpus, get_llm, hybrid_search
 from loguru import logger
 
-RULES = """TODO write the rules here"""
+RULES = """You answer questions about EU law using ONLY the sources given below.
+- Do not use your own memory or general knowledge: if a fact is not written in the sources, you do not know it.
+- In "citations", list the ids (for example GDPR-Art17-1) of every source you used for the answer, and only those.
+- If the sources do not contain the answer, set "answerable" to false, leave "citations" empty,
+  and say in "answer" that the sources do not allow you to answer. Never guess."""
 
 # Everything below only runs when you run this file directly (lab 5 imports RULES).
 if __name__ == "__main__":
@@ -59,6 +63,6 @@ if __name__ == "__main__":
     logger.info("The answers of the model are saved in answer_received.txt, next to this lab: open it.")
 
 # My answers
-# the three parts of the prompt, in order =
-# did the date change compared with lab 1? =
-# was the Data Act question refused? =
+# the three parts of the prompt, in order = 1. my RULES, 2. the <sources> (5 chunks with their ids), 3. the question
+# did the date change compared with lab 1? = yes: 17 July 2024 (invented) -> 2 December 2027 (correct, cites AIAct-Art113-3)
+# was the Data Act question refused? = yes: answerable=False, citations=[] (the Data Act is not in the corpus)

@@ -31,7 +31,7 @@ Then run this file. Which chunk comes first?
 Bonus: ask your own question (this one calls the model once, to embed it). Try k=10 or a question in French.
 """
 from lab_tools import (
-    dense_search,  # noqa: F401  (used once you complete the TODO)
+    dense_search,
     get_corpus,
     get_llm,
 )
@@ -44,11 +44,18 @@ question = "What is the right to be forgotten?"
 logger.info(f"Question: {question}")
 
 # TODO 1: replace the empty list by the call to dense_search
-hits = []
+hits = dense_search(corpus, llm, question, k=5)
 
 if not hits:
     logger.info("TODO not done yet: call dense_search")
 
 # TODO 2: log one line per hit (see the format above)
+for chunk_id, score in hits:
+    chunk = corpus.by_id[chunk_id]
+    logger.info(f"{score:.3f}  {chunk_id}  {chunk['regulation']}, {chunk['article']}: {chunk['title']}")
 
 # TODO 3: log the text of the best chunk (hits[0] is the best pair)
+if hits:
+    best_id = hits[0][0]
+    logger.info(f"--- text of the best chunk ({best_id}) ---")
+    logger.info(corpus.by_id[best_id]["text"])
