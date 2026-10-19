@@ -15,6 +15,8 @@ Bonus: log json.dumps(ProductNotice.model_json_schema(), indent=2) and find each
 This is a JSON Schema: a JSON that describes what another JSON must look like.
 """
 
+import json
+
 from lab_tools import DATA
 from loguru import logger
 from pydantic import BaseModel
@@ -38,3 +40,6 @@ if __name__ == "__main__":
         kettle_json = (DATA / "kettle.json").read_text(encoding="utf-8")
         notice = ProductNotice.model_validate_json(kettle_json)
         logger.info(notice)
+
+        # Bonus: the JSON Schema generated from the class (this is what is sent to the API)
+        logger.info(json.dumps(ProductNotice.model_json_schema(), indent=2))

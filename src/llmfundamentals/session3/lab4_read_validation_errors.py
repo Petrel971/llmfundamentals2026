@@ -33,7 +33,7 @@ for number in [1, 2, 3, 4]:
         logger.info(error.problems)
 
 # My answers
-# answer 1 =
-# answer 2 =
-# answer 3 =
-# answer 4 =
+# answer 1 = C  (single quotes: "Invalid JSON: key must be a string")
+# answer 2 = A  ("brand: Field required")
+# answer 3 = B  (power_watts is "2.2 kW": "Input should be a valid integer")
+# answer 4 = D  (warnings is a single text: "Input should be a valid array")

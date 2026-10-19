@@ -14,7 +14,7 @@ Bonus: add a rule: servings must be at least 1. Test it with a fake answer you w
 """
 
 from lab6_retry_loop import ask_with_retry
-from lab_tools import DATA, get_llm
+from lab_tools import DATA, fake_next, get_llm
 from loguru import logger
 from pydantic import BaseModel, field_validator
 
@@ -22,8 +22,14 @@ from pydantic import BaseModel, field_validator
 class Recipe(BaseModel):
     name: str
     servings: int
-    prep_minutes: int
+    prep_minutes: int | None  # some recipes do not give a preparation time
     ingredients: list[str]
+
+    @field_validator("servings")
+    def check_servings(cls, value):
+        if value < 1:
+            raise ValueError("servings must be at least 1")
+        return value
 
     @field_validator("prep_minutes")
     def check_prep_minutes(cls, value):
@@ -40,5 +46,12 @@ if __name__ == "__main__":
         llm = get_llm()
         recipe_text = (DATA / "recipe.txt").read_text(encoding="utf-8")
         prompt = f"Extract the data of this recipe.\n\n{recipe_text}"
+        recipe = ask_with_retry(llm, prompt, Recipe)
+        logger.info(recipe)
+
+        logger.info("===== Bonus: a fake answer with servings = 0, then the real model")
+        fake_next(
+            '{"name": "Pancakes with lemon", "servings": 0, "prep_minutes": 15, "ingredients": ["250 g flour"]}'
+        )
         recipe = ask_with_retry(llm, prompt, Recipe)
         logger.info(recipe)

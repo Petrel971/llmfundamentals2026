@@ -34,16 +34,18 @@ def ask_with_retry(llm, prompt, output_class, max_attempts=3):
             return result
         except StructuredOutputError as error:
             logger.info(f"attempt {attempt}: failed")
-            # Tip: an f-string with {prompt}, {error.answer} and {error.problems}
-            current_prompt = f"""
-                Your prompt was: {prompt}.
-                Your answer was: {error.answer}, but it has an error {error.problems}.
-                Correct it.
-            """
-            pass  # noqa: PIE790
+            last_problems = error.problems
+            current_prompt = (
+                f"{prompt}\n\n"
+                f"Your previous answer was:\n{error.answer}\n\n"
+                f"It was rejected for these reasons:\n{error.problems}\n\n"
+                "Give a corrected answer. Only use values written in the text above."
+            )
+            if attempt == 1:
+                logger.info(f"prompt for attempt 2:\n{current_prompt}")
 
     raise RuntimeError(
-        f"We tried {max_attempts} times and it still failed to give a correct json."
+        f"No valid answer after {max_attempts} attempts. Last problems:\n{last_problems}"
     )
 
 

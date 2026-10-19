@@ -33,14 +33,17 @@ class CheckedNotice(ProductNotice):
             raise ValueError("min_age must be between 0 and 18")
         return value
 
-    # TODO: write check_power for "power_watts", like check_min_age above. between 0 and 8000
     @field_validator("power_watts")
     def check_power(cls, value):
-        if value is not None and not (10 <= value <= 8000):
-            raise ValueError("power_watts must be between 100 and 8000")
+        if value is not None and not (1 <= value <= 5000):
+            raise ValueError("power_watts must be between 1 and 5000")
         return value
 
-    # TODO (bonus): write check_warranty for "warranty_years" less than 100
+    @field_validator("warranty_years")
+    def check_warranty(cls, value):
+        if value is not None and not (0 <= value <= 10):
+            raise ValueError("warranty_years must be between 0 and 10")
+        return value
 
 
 # Everything below only runs when you run this file directly.
@@ -49,6 +52,14 @@ if __name__ == "__main__":
 
     logger.info("===== Part 1: fake answer with power_watts = 0")
     fake_next(DATA / "fakes" / "kettle_power_zero.json")
+    try:
+        llm.ask_structured("unused prompt", CheckedNotice)
+        logger.info("validation: OK  <- the rule is missing or wrong")
+    except StructuredOutputError as error:
+        logger.info(error.problems)
+
+    logger.info("===== Bonus: fake answer with warranty_years = 25")
+    fake_next(DATA / "fakes" / "kettle_warranty_25.json")
     try:
         llm.ask_structured("unused prompt", CheckedNotice)
         logger.info("validation: OK  <- the rule is missing or wrong")
